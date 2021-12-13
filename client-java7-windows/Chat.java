@@ -7,7 +7,6 @@ import java.text.*;
 import java.net.*;
 import java.io.*;
 import java.applet.*;
-import javax.sound.sampled.*;
 
 public class Chat extends JFrame implements ActionListener{
 	
@@ -16,8 +15,6 @@ public class Chat extends JFrame implements ActionListener{
 	
 	Calendar cal = Calendar.getInstance();
   	SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-	
-	AudioClip bump, song;
 	
 	//Username GUI
 	JFrame pokemonFrame;
@@ -35,12 +32,7 @@ public class Chat extends JFrame implements ActionListener{
 	JScrollPane chatScroll, usersScroll;
 	JLabel userHeader;
 		
-	ArrayList<String> pokemon = new ArrayList<String>(Arrays.asList("Arcanine", "Articuno", 
-	"Blastoise", "Charizard", "Cubone", "Diglett", "Ditto", "Dragonair", "Dragonite", 
-	"Eevee", "Flareon", "Gengar", "Growlithe", "Gyarados", "Haunter", "Jolteon", "Lapras", 
-	"Magikarp", "Magmar", "Mew", "Mewtwo", "Moltres", "Ninetales", "Onix", "Pidgeot", "Pikachu", 
-	"Ponyta", "Rapidash", "Scyther", "Seadra", "Seal", "Snorlax", "Starmie", "Vaporeon", "Venusaur", 
-	"Vulpix", "Zapdos"));
+	ArrayList<String> pokemon = new ArrayList<String>(Arrays.asList("Eevee", "Pikachu"));
 	
 	//Client thread variables
 	Socket socket;
@@ -63,7 +55,6 @@ public class Chat extends JFrame implements ActionListener{
 		createUserList();
 		createSendText();
 		createMainPanel();
-		importMedia();
 				
 		setJMenuBar(menuBar);
 		
@@ -74,16 +65,6 @@ public class Chat extends JFrame implements ActionListener{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setContentPane(bg);
 		setSize(450, 300);
-	}
-	
-	public void importMedia() {
-		try {
-			bump = Applet.newAudioClip(getClass().getResource("sounds/bump.wav"));
-			song = Applet.newAudioClip(getClass().getResource("sounds/song.wav"));
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 	
 	public void createMainPanel() {
@@ -466,7 +447,6 @@ public class Chat extends JFrame implements ActionListener{
 										game.privateChat.append(player1 + " joined the game\n");
 										game.privateChat.append(player2 + " joined the game\n");
 										game.privateChat.setCaretPosition(game.privateChat.getDocument().getLength());
-										song.play();
 										viewGame.setEnabled(true);
 										break;
 									case 4:
@@ -489,7 +469,6 @@ public class Chat extends JFrame implements ActionListener{
 										String errorMsg = in.readUTF();
 										game.privateChat.append(errorMsg + "\n");
 										game.privateChat.setCaretPosition(game.privateChat.getDocument().getLength());
-										bump.play();
 										JOptionPane.showMessageDialog(game, errorMsg);
 										break;
 									case 6:
@@ -497,7 +476,6 @@ public class Chat extends JFrame implements ActionListener{
 										String gameMsg = in.readUTF();
 										game.privateChat.append(gameMsg + "\n");
 										game.privateChat.setCaretPosition(game.privateChat.getDocument().getLength());
-										bump.play();
 										JOptionPane.showMessageDialog(game, gameMsg);
 										break;
 									case 7:
@@ -522,7 +500,6 @@ public class Chat extends JFrame implements ActionListener{
 										}
 										game.participants.setText(winnerMsg);
 										game.iconLabel.setIcon(null);
-										song.stop();
 										viewGame.setEnabled(false);
 										queue.setEnabled(true);										
 										break;

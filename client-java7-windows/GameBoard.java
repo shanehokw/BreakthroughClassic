@@ -5,8 +5,6 @@ import java.util.*;
 
 public class GameBoard extends JFrame implements ActionListener{
 	
-	Interface ui;
-	
 	JFrame rulesFrame;
 	JTextArea privateChat;
 	JTextField sendText;
@@ -16,7 +14,7 @@ public class GameBoard extends JFrame implements ActionListener{
 	JScrollPane privateChatScroll;
 	JMenuBar menuBar;
 	JMenu file, help, game;
-	JMenuItem rules, clear, pokeInterface; 
+	JMenuItem rules, clear; 
 	
 	ImageIcon avatar1, avatar2;
 	
@@ -53,7 +51,6 @@ public class GameBoard extends JFrame implements ActionListener{
 		setResizable(false);
 		setLocation(20+chat.getWidth(), 60);
 		
-		ui = new Interface(GameBoard.this, chat);	
 		displayRules();	
 	}
 	
@@ -117,11 +114,9 @@ public class GameBoard extends JFrame implements ActionListener{
 		
 		help = new JMenu("Help");
 		file = new JMenu("File");
-		game = new JMenu("Game");
 		
 		clear = new JMenuItem("Clear");
 		rules = new JMenuItem("Rules");
-		pokeInterface = new JMenuItem("Pokemon Interface");
 		
 		menuBar.add(file);
 		menuBar.add(game);
@@ -129,13 +124,10 @@ public class GameBoard extends JFrame implements ActionListener{
 		
 		help.add(rules);
 		file.add(clear);
-		game.add(pokeInterface);
 		
 		setJMenuBar(menuBar);
 		
 		rules.addActionListener(this);
-		clear.addActionListener(this);
-		pokeInterface.addActionListener(this);
 	}
 	
 	public void createNorth() {
@@ -235,12 +227,6 @@ public class GameBoard extends JFrame implements ActionListener{
 			}
 		}
 		
-		if (playerID == 1) {
-			ui.setHP(one);
-		}
-		else if (playerID == 2) {
-			ui.setHP(two);
-		}
 			
 		for(int row = 0; row < 8; row++) {
 			for(int col = 0; col < 8; col++) {   
@@ -310,9 +296,7 @@ public class GameBoard extends JFrame implements ActionListener{
 		else if (ae.getSource() == rules) {
 			displayRules();
 		}
-		else if (ae.getSource() == pokeInterface) {
-			ui.setVisible(true);
-		}
+		
 		else if (ae.getSource() == rulesOK) {
 			rulesFrame.setVisible(false);
 		}

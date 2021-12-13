@@ -32,22 +32,6 @@ public class Server extends JFrame{
 		
 		makeGUI();
 		
-		// Test stuff
-		
-		/*
-		Player p1 = new Player(1);
-		Player p2 = new Player(2);
-		Game g1 = new Game(p1, p2);
-		
-		System.out.println(g1.getGameState());
-		
-		
-		// simulate move
-		g1.evaluateMove(p1, new Coordinate(1,0), new Coordinate(2,0));
-		
-		System.out.println(g1.getGameState());
-		*/
-		
 		try {
 			
 			serverSocket = new ServerSocket(16238);
