@@ -96,16 +96,16 @@ public class GameBoard extends JFrame implements ActionListener{
 	
 	public void setAvatars(String p1, String p2) {
 		if (pokemon.contains(p1) && pokemon.contains(p2)) {
-			avatar1 = new ImageIcon(getClass().getResource("images/" + p1 + ".png"));
-			avatar2 = new ImageIcon(getClass().getResource("images/" + p2 + ".png"));
+			avatar1 = new ImageIcon(getClass().getResource("sprites/" + p1 + ".png"));
+			avatar2 = new ImageIcon(getClass().getResource("sprites/" + p2 + ".png"));
 		}
 		else if (pokemon.contains(p1) == false && pokemon.contains(p2)) {
-			avatar1 = new ImageIcon(getClass().getResource("images/Ash.png"));
-			avatar2 = new ImageIcon(getClass().getResource("images/" + p2 + ".png"));			
+			avatar1 = new ImageIcon(getClass().getResource("sprites/Ash.png"));
+			avatar2 = new ImageIcon(getClass().getResource("sprites/" + p2 + ".png"));			
 		}
 		else if (pokemon.contains(p2) == false && pokemon.contains(p1)) {
-			avatar1 = new ImageIcon(getClass().getResource("images/" + p1 + ".png"));
-			avatar2 = new ImageIcon(getClass().getResource("images/Ash.png"));
+			avatar1 = new ImageIcon(getClass().getResource("sprites/" + p1 + ".png"));
+			avatar2 = new ImageIcon(getClass().getResource("sprites/Ash.png"));
 		}	
 	}
 	
@@ -119,7 +119,7 @@ public class GameBoard extends JFrame implements ActionListener{
 		rules = new JMenuItem("Rules");
 		
 		menuBar.add(file);
-		menuBar.add(game);
+//		menuBar.add(game);
 		menuBar.add(help);
 		
 		help.add(rules);
@@ -335,15 +335,15 @@ public class GameBoard extends JFrame implements ActionListener{
 		public void actionPerformed(ActionEvent ae)  { 
 			
 			Toolkit toolkit = Toolkit.getDefaultToolkit();
-			Image cursorImage = toolkit.getImage(getClass().getResource("pokeball/openpokeball.png"));
-			Point cursorHotSpot = new Point(0,0);
-			Cursor customCursor = toolkit.createCustomCursor(cursorImage, cursorHotSpot, "Cursor");
+//			Image cursorImage = toolkit.getImage(getClass().getResource("pokeball/openpokeball.png"));
+//			Point cursorHotSpot = new Point(0,0);
+//			Cursor customCursor = toolkit.createCustomCursor(cursorImage, cursorHotSpot, "Cursor");
 		
 			if ((playerID == 1 && playerTurn == 1) || (playerID == 2 && playerTurn == 2)) {
 				if (count == 1) {				
 					for (int row = 0; row < 8; row++) {
 						for (int col = 0; col < 8; col++) {
-							GameBoard.buttons[col][row].setCursor(customCursor);
+							GameBoard.buttons[col][row].setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 						}
 					}
 					setBackground(new Color(1,80,125));
