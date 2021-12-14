@@ -21,7 +21,9 @@ public class Heartbeat extends Observable implements Runnable {
 		this.maxAttempts = maxAttempts;
 		this.sleepMS = sleepTimeMS;
 		currentTimeout.set(maxAttempts);
-		new Thread(this).start();
+		Thread heartbeatThread = new Thread(this);
+		heartbeatThread.setPriority(Thread.MAX_PRIORITY);
+		heartbeatThread.start();;
 	}
 	
 	private void updateObservers() {
