@@ -378,17 +378,26 @@ public class Server extends JFrame{
 					for (int i = 0; i < tempList.length; i++) {
 						temp[i] = Integer.parseInt(tempList[i]);
 					}
-					int count = 0;
-					while (count < temp.length) {
-						int value = temp[count];
-						if (value == 2) {
+					int count2 = 0;
+					int count1 = 7;
+					while (count2 < temp.length && count1 <= temp.length) {
+						int win2 = temp[count2];
+						int win1 = temp[count1];
+						if (win2 == 2) {
 							ArrayList<Object> packetProperties2 = new ArrayList<Object>();
 							packetProperties2.add(curGame.player2 + " has won!");
 							new Packet(8, packetProperties2).send(recipients);							
 							break;
 						}
+						else if (win1 == 1) {
+							ArrayList<Object> packetProperties1 = new ArrayList<Object>();
+							packetProperties1.add(curGame.player1 + " has won!");
+							new Packet(8, packetProperties1).send(recipients);							
+							break;
+						}
 						else {
-							count = count + 8;
+							count1 = count1 + 8;
+							count2 = count2 + 8;
 						}
 					}
 				}
