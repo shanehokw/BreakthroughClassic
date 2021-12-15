@@ -24,6 +24,10 @@ public class Player
 		return game;
 	}
 	
+	public String getUserName() {
+		return userName;
+	}
+	
 	public int getPlayerNum() {
 		return playerNum;
 	}

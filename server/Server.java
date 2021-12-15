@@ -212,7 +212,7 @@ public class Server extends JFrame{
 		}
 		
 		private boolean validateUsername(String username) {
-			if(username.length() > 0) {
+			if(username.length() > 0 && !username.equals(player.getUserName())) {
 				player.userName = username;
 				textArea.append("New Player Joined successfully (" + username + ")\n"); // Print to server log
 				return true;

@@ -23,13 +23,11 @@ public class GameBoard extends JFrame implements ActionListener{
 	String player1, player2, username, boardUpdate, currentCoordinates, toCoordinates;;
 	
 	static int playerID, playerTurn;	
-	ArrayList<String> pokemon;
 	
 	Chat chat;
 		
-	public GameBoard(ArrayList _pokemon, String username, String p1, String p2, int id, Chat _chat) {		
+	public GameBoard(String username, String p1, String p2, int id, Chat _chat) {		
 		chat = _chat;
-		pokemon = _pokemon;
 		this.avatar1 = avatar1;
 		this.avatar2 = avatar2;
 		this.username = username;
@@ -38,7 +36,7 @@ public class GameBoard extends JFrame implements ActionListener{
 		playerID = id;
 		
 		setAvatars(player1, player2);
-				
+		
 		createNorth();
 		createCenter();
 		createSouth();
@@ -95,18 +93,8 @@ public class GameBoard extends JFrame implements ActionListener{
 	}
 	
 	public void setAvatars(String p1, String p2) {
-		if (pokemon.contains(p1) && pokemon.contains(p2)) {
-			avatar1 = new ImageIcon(getClass().getResource("sprites/" + p1 + ".png"));
-			avatar2 = new ImageIcon(getClass().getResource("sprites/" + p2 + ".png"));
-		}
-		else if (pokemon.contains(p1) == false && pokemon.contains(p2)) {
-			avatar1 = new ImageIcon(getClass().getResource("sprites/Ash.png"));
-			avatar2 = new ImageIcon(getClass().getResource("sprites/" + p2 + ".png"));			
-		}
-		else if (pokemon.contains(p2) == false && pokemon.contains(p1)) {
-			avatar1 = new ImageIcon(getClass().getResource("sprites/" + p1 + ".png"));
-			avatar2 = new ImageIcon(getClass().getResource("sprites/Ash.png"));
-		}	
+		avatar1 = new ImageIcon(getClass().getResource("sprites/blackslot.png"));
+		avatar2 = new ImageIcon(getClass().getResource("sprites/redslot.png"));
 	}
 	
 	public void createMenu() {

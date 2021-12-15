@@ -17,9 +17,10 @@ public class Chat extends JFrame implements ActionListener{
   	SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 	
 	//Username GUI
-	JFrame pokemonFrame;
+  	String name;
+	JFrame nameFrame;
 	JButton ok;
-	JComboBox pkmn;
+	JTextField nameField;
 	
 	//Main Chat GUI
 	JMenuBar menuBar;
@@ -31,8 +32,6 @@ public class Chat extends JFrame implements ActionListener{
 	JTextArea chatArea, users;
 	JScrollPane chatScroll, usersScroll;
 	JLabel userHeader;
-		
-	ArrayList<String> pokemon = new ArrayList<String>(Arrays.asList("Eevee", "Pikachu"));
 	
 	//Client thread variables
 	Socket socket;
@@ -182,15 +181,9 @@ public class Chat extends JFrame implements ActionListener{
 	}
 	
 	public void generateName() {
-	
-		pkmn = new JComboBox();
-				
-		for (String name : pokemon) {
-			pkmn.addItem(name);
-		}
-		pkmn.setEditable(false);
+		nameField = new JTextField();
 		
-		pokemonFrame = new JFrame("Choose your Pokemon");
+		nameFrame = new JFrame("Enter your name:");
 		JPanel bottom = new JPanel();
 		
 		ok = new JButton("OK");
@@ -199,12 +192,12 @@ public class Chat extends JFrame implements ActionListener{
 		
 		bottom.add(ok);
 		
-		pokemonFrame.add(pkmn, BorderLayout.CENTER);
-		pokemonFrame.add(bottom, BorderLayout.SOUTH);
+		nameFrame.add(nameField, BorderLayout.CENTER);
+		nameFrame.add(bottom, BorderLayout.SOUTH);
 				
-		pokemonFrame.setLocationRelativeTo(this);
-		pokemonFrame.setVisible(true);
-		pokemonFrame.setSize(300, 100);
+		nameFrame.setLocationRelativeTo(this);
+		nameFrame.setVisible(true);
+		nameFrame.setSize(300, 100);
 	}
 	
 
@@ -223,8 +216,8 @@ public class Chat extends JFrame implements ActionListener{
 			}
 		}
 		else if (ae.getSource() == ok) {
-			username = (String) pkmn.getSelectedItem();
-			pokemonFrame.setVisible(false);
+			username = nameField.getText();
+			nameFrame.setVisible(false);
 			connect();
 		}
 		else if (ae.getSource() == editIP) {
@@ -441,7 +434,7 @@ public class Chat extends JFrame implements ActionListener{
 										playerID = in.readInt();
 										player1 = in.readUTF();
 										player2 = in.readUTF();
-										game = new GameBoard(pokemon, username, player1, player2, playerID, Chat.this); 
+										game = new GameBoard(username, player1, player2, playerID, Chat.this); 
 										chatArea.append("[" + sdf.format(cal.getTime()) + "] " + "Game Created: " + player1 + " vs " + player2 + "\n");
 										chatArea.setCaretPosition(chatArea.getDocument().getLength());
 										game.privateChat.append(player1 + " joined the game\n");
