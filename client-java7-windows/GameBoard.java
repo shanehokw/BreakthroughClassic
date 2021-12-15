@@ -203,15 +203,21 @@ public class GameBoard extends JFrame implements ActionListener{
 		
 		if (playerID == playerTurn) {
 			participants.setText("YOUR TURN");
-			iconLabel.setIcon(new ImageIcon(getClass().getResource("sprites/" + username + ".png")));
+//			iconLabel.setIcon(new ImageIcon(getClass().getResource("sprites/" + username + ".png")));
+			if (playerID == 1) {
+				iconLabel.setIcon(new ImageIcon(getClass().getResource("sprites/blackslot.png")));
+			}
+			else {
+				iconLabel.setIcon(new ImageIcon(getClass().getResource("sprites/redslot.png")));
+			}
 		}
 		else {
 			participants.setText("OPPONENT'S TURN");
 			if (playerID == 1) {
-				iconLabel.setIcon(new ImageIcon(getClass().getResource("sprites/" + player2 + ".png")));
+				iconLabel.setIcon(new ImageIcon(getClass().getResource("sprites/redslot.png")));
 			}
 			else {
-				iconLabel.setIcon(new ImageIcon(getClass().getResource("sprites/" + player1 + ".png")));
+				iconLabel.setIcon(new ImageIcon(getClass().getResource("sprites/blackslot.png")));
 			}
 		}
 		
