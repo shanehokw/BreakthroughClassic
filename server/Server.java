@@ -212,12 +212,18 @@ public class Server extends JFrame{
 		}
 		
 		private boolean validateUsername(String username) {
-			if(username.length() > 0 && !username.equals(player.getUserName())) {
+			if(username.length() > 3) {
+				for(ConnectedClient client : allClients.values()) {
+					if(username.equals(client.getPlayer().getUserName())) {
+						textArea.append("New Player Failed to Join  (" + username + " was taken)\n"); // Print to server log
+						return false;
+					}
+				}
 				player.userName = username;
 				textArea.append("New Player Joined successfully (" + username + ")\n"); // Print to server log
 				return true;
 			}
-			textArea.append("New Player Failed to Join  (" + username + " was taken)\n"); // Print to server log
+			textArea.append("Username needs to be more than 3 letters\n"); // Print to server log
 			return false;
 		}
 
