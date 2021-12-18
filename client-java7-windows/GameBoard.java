@@ -242,25 +242,25 @@ public class GameBoard extends JFrame implements ActionListener{
 	
 	public void setColor(int row, int col) {
 		if ((row == 0 || row == 2 || row == 4 || row == 6) && (col == 0 || col == 2 || col == 4 || col == 6)) {
-			buttons[row][col].setBackground(Color.BLACK);
+			buttons[row][col].setBackground(new Color(182,148,110));
 			buttons[row][col].setOpaque(true);
 			buttons[row][col].setBorderPainted(false);
-		}//set black blocks for all even numbered rows
+		}//set dark blocks for all even numbered rows
 		else if ((row == 1 || row == 3 || row == 5 || row == 7) && (col == 1 || col == 3 || col == 5 || col == 7)) {
-			buttons[row][col].setBackground(Color.BLACK);
+			buttons[row][col].setBackground(new Color(182,148,110));
 			buttons[row][col].setOpaque(true);
 			buttons[row][col].setBorderPainted(false);
-		}//set black blocks for all odd numbered rows
+		}//set dark blocks for all odd numbered rows
 		else if ((row == 0 || row == 2 || row == 4 || row == 6) && (col == 1 || col == 3 || col == 5 || col == 7)) {
-			buttons[row][col].setBackground(Color.WHITE);
+			buttons[row][col].setBackground(new Color(255,241,220));
 			buttons[row][col].setOpaque(true);
 			buttons[row][col].setBorderPainted(false);
-		}//set white blocks for all even numbered rows
+		}//set light blocks for all even numbered rows
 		else if ((row == 1 || row == 3 || row == 5 || row == 7) && (col == 0 || col == 2 || col == 4 || col == 6)) {
-			buttons[row][col].setBackground(Color.WHITE);
+			buttons[row][col].setBackground(new Color(255,241,220));
 			buttons[row][col].setOpaque(true);
 			buttons[row][col].setBorderPainted(false);
-		}//set white blocks for all odd numbered rows
+		}//set light blocks for all odd numbered rows
 	}
 	
 	public void actionPerformed(ActionEvent ae) {
