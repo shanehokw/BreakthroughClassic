@@ -44,7 +44,7 @@ public class Chat extends JFrame implements ActionListener{
 	int numPlayers, playerID, playerTurn;	
 	static final int INITIAL_TIMEOUT = 20;
 		
-	public Chat() {		
+	public Chat() {
 		int random = 1 + (int) (Math.random() * 4);	
 		bg = new Background("bg" + random);
 		bg.setLayout(new BorderLayout());
@@ -57,7 +57,7 @@ public class Chat extends JFrame implements ActionListener{
 				
 		setJMenuBar(menuBar);
 		
-		setTitle("Breakthrough Lobby");
+		setTitle("BreakthroughClassic Lobby");
 		setVisible(true);
 		setResizable(false);
 		setLocation(25, 60);
