@@ -7,6 +7,7 @@ import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.concurrent.ConcurrentHashMap;
@@ -308,7 +309,13 @@ public class Server extends JFrame{
 						// Add the new game to the list of active games
 						synchronized(activeGames) {
 							activeGames.add(newGame);
+							System.out.println(Arrays.toString(activeGames.toArray()));
 						}
+						
+						//clear the JTextArea displaying list of current active games
+						gamesInProgress.selectAll();
+						gamesInProgress.replaceSelection("");
+						//rewrite a new list with the newly added game
 						for (Game game : activeGames) {
 							gamesInProgress.append(game.player1.userName + " vs " + game.player2.userName + "\n");
 						}
@@ -391,14 +398,30 @@ public class Server extends JFrame{
 						int win1 = temp[count1];
 						if (win2 == 2) {
 							ArrayList<Object> packetProperties2 = new ArrayList<Object>();
-							packetProperties2.add(curGame.player2 + " has won!");
-							new Packet(8, packetProperties2).send(recipients);							
+							packetProperties2.add(curGame.player2.userName + " has won!");
+							new Packet(8, packetProperties2).send(recipients);
+							activeGames.remove(curGame);
+							//clear the JTextArea displaying list of currently active games
+							gamesInProgress.selectAll();
+							gamesInProgress.replaceSelection("");
+							//rewrite list of other still active games
+							for (Game game : activeGames) {
+								gamesInProgress.append(game.player1.userName + " vs " + game.player2.userName + "\n");
+							}
 							break;
 						}
 						else if (win1 == 1) {
 							ArrayList<Object> packetProperties1 = new ArrayList<Object>();
-							packetProperties1.add(curGame.player1 + " has won!");
-							new Packet(8, packetProperties1).send(recipients);							
+							packetProperties1.add(curGame.player1.userName + " has won!");
+							new Packet(8, packetProperties1).send(recipients);
+							activeGames.remove(curGame);
+							//clear the JTextArea displaying list of currently active games
+							gamesInProgress.selectAll();
+							gamesInProgress.replaceSelection("");
+							//rewrite list of other still active games
+							for (Game game : activeGames) {
+								gamesInProgress.append(game.player1.userName + " vs " + game.player2.userName + "\n");
+							}
 							break;
 						}
 						else {

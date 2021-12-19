@@ -107,7 +107,6 @@ public class GameBoard extends JFrame implements ActionListener{
 		rules = new JMenuItem("Rules");
 		
 		menuBar.add(file);
-//		menuBar.add(game);
 		menuBar.add(help);
 		
 		help.add(rules);
@@ -203,7 +202,6 @@ public class GameBoard extends JFrame implements ActionListener{
 		
 		if (playerID == playerTurn) {
 			participants.setText("YOUR TURN");
-//			iconLabel.setIcon(new ImageIcon(getClass().getResource("sprites/" + username + ".png")));
 			if (playerID == 1) {
 				iconLabel.setIcon(new ImageIcon(getClass().getResource("sprites/blackslot.png")));
 			}
@@ -313,9 +311,6 @@ public class GameBoard extends JFrame implements ActionListener{
 		public void actionPerformed(ActionEvent ae)  { 
 			
 			Toolkit toolkit = Toolkit.getDefaultToolkit();
-//			Image cursorImage = toolkit.getImage(getClass().getResource("pokeball/openpokeball.png"));
-//			Point cursorHotSpot = new Point(0,0);
-//			Cursor customCursor = toolkit.createCustomCursor(cursorImage, cursorHotSpot, "Cursor");
 		
 			if ((playerID == 1 && playerTurn == 1) || (playerID == 2 && playerTurn == 2)) {
 				if (count == 1) {				
