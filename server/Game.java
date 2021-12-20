@@ -110,7 +110,7 @@ public class Game
 			System.out.println(tile.coordinates);
 		}
 		
-		// Print all the coordinate keys in oprder
+		// Print all the coordinate keys in order
 		System.out.println("This should be all the coordinates in order");
 		for(Coordinate c: gameTiles.keySet()) {
 			System.out.println(c);
