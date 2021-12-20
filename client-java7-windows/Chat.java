@@ -5,6 +5,7 @@ import java.awt.event.*;
 import java.util.*;
 import java.text.*;
 import java.net.*;
+import java.sql.Timestamp;
 import java.io.*;
 import java.applet.*;
 
@@ -13,13 +14,12 @@ public class Chat extends JFrame implements ActionListener{
 	GameBoard game;
 	Background bg;
 	
-	Calendar cal = Calendar.getInstance();
   	SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 	
 	//Username GUI
   	String name;
-	JFrame nameFrame;
-	JButton ok;
+	JFrame nameFrame, dcMsgFrame;
+	JButton ok, dcMsgOk;
 	JTextField nameField;
 	
 	//Main Chat GUI
@@ -215,6 +215,10 @@ public class Chat extends JFrame implements ActionListener{
 				chatArea.setCaretPosition(chatArea.getDocument().getLength());
 			}
 		}
+		else if (ae.getSource() == dcMsgOk) {
+			dcMsgFrame.setVisible(false);
+			System.exit(0);
+		}
 		else if (ae.getSource() == ok) {
 			username = nameField.getText();
 			nameFrame.setVisible(false);
@@ -238,6 +242,28 @@ public class Chat extends JFrame implements ActionListener{
 		}
 	}//End of actionPerformed
 	
+	public void rename() {
+		try {
+			out.write(5);
+			out.flush();
+			in.close();
+			out.close();
+			socket.close();
+			users.setText("");
+			game.privateChat.append("Enter a valid username! \n");
+			game.privateChat.setCaretPosition(game.privateChat.getDocument().getLength());
+			connect.setEnabled(true);
+			queue.setEnabled(true);
+		}
+		catch (IOException ioe) {
+			users.setText("");
+			chatArea.append("Enter a valid username! \n");
+			chatArea.setCaretPosition(chatArea.getDocument().getLength());
+			connect.setEnabled(true);
+			queue.setEnabled(true);
+		}
+	}
+	
 	public void disconnect() {
 		try {
 			out.write(5);
@@ -246,23 +272,57 @@ public class Chat extends JFrame implements ActionListener{
 			out.close();
 			socket.close();
 			users.setText("");
-			game.privateChat.append("Disconnected from server.\n");
+			game.privateChat.append("Disconnected from server. Restart the application! \n");
 			game.privateChat.setCaretPosition(game.privateChat.getDocument().getLength());
 			connect.setEnabled(true);
 			queue.setEnabled(true);
 		}
 		catch (IOException ioe) {
 			users.setText("");
-			chatArea.append("Disconnected from server.\n");
+			chatArea.append("Disconnected from server. Restart the application! \n");
 			chatArea.setCaretPosition(chatArea.getDocument().getLength());
 			connect.setEnabled(true);
 			queue.setEnabled(true);
+			
+			disconnectMessage();
 		}
+	}
+	
+	public void disconnectMessage() {
+		JLabel header = new JLabel("Disconnected!");
+		
+		header.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+		JLabel msg1 = new JLabel("You've disconnected. Please restart the application.");
+		
+		dcMsgFrame = new JFrame("Rules");
+		
+		JPanel msgPanel = new JPanel();
+		msgPanel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+		msgPanel.setLayout(new BoxLayout(msgPanel, BoxLayout.Y_AXIS));		
+		msgPanel.add(msg1);
+		
+		JPanel south = new JPanel();
+		dcMsgOk = new JButton("OK");
+		dcMsgFrame.getRootPane().setDefaultButton(dcMsgOk);
+		dcMsgOk.requestFocus();
+		dcMsgOk.setPreferredSize(new Dimension(75, 25));
+		south.add(dcMsgOk);
+				
+		dcMsgFrame.add(header, BorderLayout.NORTH);
+		dcMsgFrame.add(msgPanel, BorderLayout.CENTER);
+		dcMsgFrame.add(south, BorderLayout.SOUTH);
+		
+		dcMsgFrame.setVisible(true);
+		dcMsgFrame.pack();
+		dcMsgFrame.setLocationRelativeTo(this);
+		dcMsgFrame.setResizable(false);
+		
+		dcMsgOk.addActionListener(this);
 	}
 		
 	public void connect() {
 		try {
-			socket = new Socket(ipAddress, 16238);
+			socket = new Socket(ipAddress, 19048);
 			Client client = new Client();
 			client.start();
 			connect.setEnabled(false);
@@ -357,9 +417,10 @@ public class Chat extends JFrame implements ActionListener{
 	
 	public void joinQueue() {
 		try {			
+			Timestamp timestampq = new Timestamp(System.currentTimeMillis());
 			out.write(3);
 			out.flush();
-			chatArea.append("[" + sdf.format(cal.getTime()) + "] " + "You have joined a queue. Please wait while you are being matched.\n");
+			chatArea.append("[" + sdf.format(timestampq) + "] " + "You have joined a queue. Please wait while you are being matched.\n");
 			chatArea.setCaretPosition(chatArea.getDocument().getLength());
 			queue.setEnabled(false);
 		}
@@ -386,6 +447,7 @@ public class Chat extends JFrame implements ActionListener{
 		
 		public void run() {
 			try {
+				
 				in = new DataInputStream(socket.getInputStream());
 				out = new DataOutputStream(socket.getOutputStream());
 				
@@ -421,21 +483,27 @@ public class Chat extends JFrame implements ActionListener{
 										break;
 									case 1:
 										//Recv lobby chat
-										chatArea.append(in.readUTF() + " says: " + in.readUTF() + "\n");
+
+										Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+										chatArea.append("[" + sdf.format(timestamp) + "] " + in.readUTF() + ": " + in.readUTF() + "\n");
 										chatArea.setCaretPosition(chatArea.getDocument().getLength());
 										break;
 									case 2:
 										//Recv game chat
-										game.privateChat.append(in.readUTF() + " says: " + in.readUTF() + "\n");
+
+										Timestamp timestamp1 = new Timestamp(System.currentTimeMillis());
+										game.privateChat.append("[" + sdf.format(timestamp1) + "] " + in.readUTF() + ": " + in.readUTF() + "\n");
 										game.privateChat.setCaretPosition(game.privateChat.getDocument().getLength());
 										break;
 									case 3:
 										//Joined a game
+										
+										Timestamp timestamp2 = new Timestamp(System.currentTimeMillis());
 										playerID = in.readInt();
 										player1 = in.readUTF();
 										player2 = in.readUTF();
 										game = new GameBoard(username, player1, player2, playerID, Chat.this); 
-										chatArea.append("[" + sdf.format(cal.getTime()) + "] " + "Game Created: " + player1 + " vs " + player2 + "\n");
+										chatArea.append("[" + sdf.format(timestamp2) + "] " + "Game Created: " + player1 + " vs " + player2 + "\n");
 										chatArea.setCaretPosition(chatArea.getDocument().getLength());
 										game.privateChat.append(player1 + " joined the game\n");
 										game.privateChat.append(player2 + " joined the game\n");
@@ -481,10 +549,12 @@ public class Chat extends JFrame implements ActionListener{
 										break;
 									case 8:
 										//Game Over
+										
+										Timestamp timestamp3 = new Timestamp(System.currentTimeMillis());
 										String winnerMsg = in.readUTF();
 										game.privateChat.append(winnerMsg + "\n");
 										game.privateChat.setCaretPosition(game.privateChat.getDocument().getLength());
-										chatArea.append("[" + sdf.format(cal.getTime()) + "] " + "Game Ended: " + player1 + " vs " + player2 + "\n" + winnerMsg + "\n");
+										chatArea.append("[" + sdf.format(timestamp3) + "] " + "Game Ended: " + player1 + " vs " + player2 + "\n" + winnerMsg + "\n");
 										chatArea.setCaretPosition(chatArea.getDocument().getLength());
 										for(int row = 0; row < 8; row++) {
 											for(int col = 0; col < 8; col++) { 								
@@ -510,11 +580,9 @@ public class Chat extends JFrame implements ActionListener{
 				else if (returnCode == -1) {
 					chatArea.append("Username taken. Choose another.\n");
 					chatArea.setCaretPosition(chatArea.getDocument().getLength());
-					disconnect();
+					rename();
 					return;
 				}
-				
-				disconnect();
 			}
 			catch (IOException ioe) {
 				disconnect();

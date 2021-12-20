@@ -1,5 +1,3 @@
-import java.awt.BorderLayout;
-import java.awt.Font;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -12,12 +10,15 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JTextArea;
+
 import javax.swing.*;
 import java.awt.*;
+
+/**
+ *	Manages how users/clients connect to the server.
+ *  Accepts data from clients and sends it to the appropriate methods and objects.
+ *  Manages a player game queue, and creates new games when appropriate. 
+ */
 
 public class Server extends JFrame{
 
@@ -25,8 +26,6 @@ public class Server extends JFrame{
 	private ConcurrentHashMap<Player, ConnectedClient> allClients = new ConcurrentHashMap<Player, ConnectedClient>(10);	
 	private ArrayList<Game> activeGames = new ArrayList<Game>(5);
 	private LinkedBlockingQueue<ConnectedClient> waitingQueue = new LinkedBlockingQueue<ConnectedClient>();
-	private ArrayList<String> takenUsernames = new ArrayList<String>(); // A list of which usernames are already taken
-	//ArrayList<String> clientNames = new ArrayList<String>();
 	JTextArea textArea, messages, gamesInProgress;
 
 	public Server() {
@@ -35,7 +34,7 @@ public class Server extends JFrame{
 		
 		try {
 			
-			serverSocket = new ServerSocket(16238);
+			serverSocket = new ServerSocket(19048);
 			Socket socket;
 
 			while(true) {
@@ -46,7 +45,7 @@ public class Server extends JFrame{
 			}
 		}
 		catch (BindException be) {
-			JOptionPane.showMessageDialog(null, "The port specified (16238) is already in use. Please free up the port and try again.");
+			JOptionPane.showMessageDialog(null, "The port specified (19048) is already in use. Please free up the port and try again.");
 			System.exit(0);
 		}
 		catch (IOException ioe) {
@@ -55,6 +54,8 @@ public class Server extends JFrame{
 	}
 
 	public void makeGUI() {
+		setTitle("BreakthroughClassic Server");
+		
 		textArea = new JTextArea(15, 20); textArea.setLineWrap(true); textArea.setWrapStyleWord(true);
 		messages = new JTextArea(15, 20); messages.setLineWrap(true); messages.setWrapStyleWord(true);
 		gamesInProgress = new JTextArea(15, 20); gamesInProgress.setLineWrap(true); gamesInProgress.setWrapStyleWord(true);
@@ -64,12 +65,6 @@ public class Server extends JFrame{
 		JScrollPane scroll3 = new JScrollPane(gamesInProgress);
 				
 		textArea.setEditable(false); messages.setEditable(false); gamesInProgress.setEditable(false);
-
-		/*
-		for (String name : clientNames) {
-			textArea.append(name + "\n");
-		}
-		*/
 		
 		add(scroll1, BorderLayout.WEST);	add(scroll2, BorderLayout.CENTER); add(scroll3, BorderLayout.EAST);
 		JPanel header = new JPanel(); 
@@ -94,6 +89,8 @@ public class Server extends JFrame{
 		DataInputStream in;
 		public static final int INITIAL_TIMEOUT = 20;
 		private boolean keepAlive = true;
+		// The heartbeat has the same timeout period (10 seconds), but is non-blocking and sends every 2.5 seconds
+		private Heartbeat heartbeat = new Heartbeat(4, 2500);
 
 		public ConnectedClient(Socket socket) {
 			this.socket = socket;
@@ -119,8 +116,6 @@ public class Server extends JFrame{
 					new Packet(-1).send(getOut()); // Send error packet to client
 				}
 
-				// My heartbeat has the same timeout period (10 seconds), but is non-blocking and sends every 2.5 seconds
-				Heartbeat heartbeat = new Heartbeat(4, 2500);
 				heartbeat.addObserver(this);
 
 				while(keepAlive) {
@@ -132,21 +127,17 @@ public class Server extends JFrame{
 						// Do the action indicated by this packet type
 						switch(packetType) {
 						case 0: System.out.println("Heartbeat received"); break;
-						case 1: 
-							String tmpMsg = in.readUTF();
-							sendLobbyChat(tmpMsg); 
-							messages.append("Recv/Sent in Lobby: " + tmpMsg + "\n");
+						case 1:
+							sendLobbyChat(in.readUTF()); 
 							break;
-						case 2: 
-							String tmpMsg2 = in.readUTF();
-							sendGameChat(tmpMsg2); 
-							messages.append("Recv/Sent in a Game: " + tmpMsg2 + "\n");
+						case 2:
+							sendGameChat(in.readUTF()); 
 							break;
 						case 3: joinGameQueue(); break;
 						case 4: System.out.println("Packet 4 received");
 								receiveMove(in.readInt(), in.readInt(), in.readInt(), in.readInt()); break;
 						case 5: disconnect(); 
-							textArea.append("Size of allclients after receiving logout packet, given 2 connected clients = " + allClients.size() + "\n");
+							textArea.append("Size of allClients after receiving logout packet, given 2 connected clients = " + allClients.size() + "\n");
 							textArea.append("The expected size is 1\n");
 							for (ConnectedClient client : allClients.values()) {																
 								textArea.append("Clients still in allClients = " + client + "\n");
@@ -213,26 +204,42 @@ public class Server extends JFrame{
 		}
 		
 		private boolean validateUsername(String username) {
-			if(username.length() > 3) {
+			if(username.length() > 0) {
 				for(ConnectedClient client : allClients.values()) {
 					if(username.equals(client.getPlayer().getUserName())) {
 						textArea.append("New Player Failed to Join  (" + username + " was taken)\n"); // Print to server log
 						return false;
 					}
 				}
+				
+				//Name is >0 and is not taken
 				player.userName = username;
 				textArea.append("New Player Joined successfully (" + username + ")\n"); // Print to server log
 				return true;
 			}
-			textArea.append("Username needs to be more than 3 letters\n"); // Print to server log
+			textArea.append("Username cannot be empty!\n"); // Print to server log
 			return false;
 		}
 
 		private void disconnect() {
 			
+			// Tell the client thread it can die
 			keepAlive = false;
+			
+			// Remove the client thread from the thread list
 			allClients.remove(this);
-		
+			
+			// Remove the heartbeat (so it can die in peace)
+			heartbeat.deleteObservers();
+						
+			// Update every connect clients' player list
+			try {
+				sendListOfPlayers();
+			}
+			catch (IOException e){
+				// The heartbeat will catch any weird disconnects
+			}
+			
 			try {
 				in.close();
 				out.close();
@@ -244,6 +251,10 @@ public class Server extends JFrame{
 		}
 		
 		private synchronized void sendLobbyChat(String message) throws IOException {
+			
+			synchronized(messages) {
+				messages.append("\nLobby Chat: Player " + player.userName + ": " + message);
+			}
 			
 			// Send lobby message to every client
 			for (ConnectedClient client : allClients.values()) {
@@ -259,6 +270,10 @@ public class Server extends JFrame{
 		
 		// Send message to the two players in the current game
 		private synchronized void sendGameChat(String message) throws IOException {
+			
+			synchronized(messages) {
+				messages.append("\nGame Chat: Player " + player.userName + ": " + message);
+			}
 			
 			Player opponent;
 			ConnectedClient opponentServerThread = null;
@@ -299,6 +314,10 @@ public class Server extends JFrame{
 			synchronized(waitingQueue) {
 				try
 				{
+					synchronized(textArea) {
+						textArea.append("\nPlayer " + player.userName + " has joined a queue");
+					}
+					
 					waitingQueue.put(this);
 
 					// If there are 2 people or more in the queue, create a new Game with first 2 players
