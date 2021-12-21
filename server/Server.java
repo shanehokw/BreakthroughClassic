@@ -403,7 +403,6 @@ public class Server extends JFrame{
 					packetProperties.add(curGame.getGameState());
 					new Packet(4, packetProperties).send(recipients); // Create and send the packet to original player
 					
-					//Non-Sid way of detecting a winner because Sid forgot to do it
 					String gs = curGame.getGameState(); //Current game state
 					String [] tempList = gs.split(",");
 					int [] temp = new int[tempList.length];

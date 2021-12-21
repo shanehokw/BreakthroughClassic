@@ -2,16 +2,13 @@ import java.util.Observable;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-// Implementation of a timeOut heartbeat that won't make the interfaces feel unresponsive
 public class Heartbeat extends Observable implements Runnable {
 	
 	private AtomicInteger currentTimeout = new AtomicInteger();
 	private int maxAttempts;
 	private int sleepMS;
 	private AtomicBoolean isDead = new AtomicBoolean();
-	
-	// The default spec wound up doing a heartbeat every 1/2 second, and timing out after 5 seconds
-	// This replicates the functionality in a different way, without the lag
+
 	/**
 	 * 
 	 * @param maxAttempts
@@ -23,7 +20,7 @@ public class Heartbeat extends Observable implements Runnable {
 		currentTimeout.set(maxAttempts);
 		Thread heartbeatThread = new Thread(this);
 		heartbeatThread.setPriority(Thread.MAX_PRIORITY);
-		heartbeatThread.start();;
+		heartbeatThread.start();
 	}
 	
 	private void updateObservers() {
@@ -57,18 +54,15 @@ public class Heartbeat extends Observable implements Runnable {
 					updateObservers();
 				}
 				else {
-					// Decrement the heartbeat (will be reset eventually, maybe)
+					// Decrement the heartbeat 
 					currentTimeout.decrementAndGet();
 					
 					// Notify observer to send heartbeat
-					System.out.println("sending a new heartbeat, maybe, in theory");
+					System.out.println("sending a new heartbeat");
 					updateObservers();
 				}
 			}
-			catch (InterruptedException e)
-			{
-				// This really shouldn't ever happen (when we'd actually care about it happening)
-			}
+			catch (InterruptedException e){}
 		}
 	}
 }
