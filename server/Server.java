@@ -227,7 +227,7 @@ public class Server extends JFrame{
 			// Remove the client thread from the thread list
 			allClients.remove(this);
 			
-			// Remove the heartbeat (so it can die in peace)
+			// Remove the heartbeat 
 			heartbeat.deleteObservers();
 						
 			// Update every connect clients' player list
