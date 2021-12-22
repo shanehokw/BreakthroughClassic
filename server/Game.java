@@ -193,7 +193,6 @@ public class Game
 			}
 		}
 		else {
-			lastErrorMessage = "You aren't even a valid player- how did you even get here? Go away!";
 			return false;
 		}
 		
