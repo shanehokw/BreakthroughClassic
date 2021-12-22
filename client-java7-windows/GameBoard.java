@@ -313,6 +313,7 @@ public class GameBoard extends JFrame implements ActionListener{
 			Toolkit toolkit = Toolkit.getDefaultToolkit();
 		
 			if ((playerID == 1 && playerTurn == 1) || (playerID == 2 && playerTurn == 2)) {
+				// selects piece to move
 				if (count == 1) {				
 					for (int row = 0; row < 8; row++) {
 						for (int col = 0; col < 8; col++) {
@@ -323,6 +324,8 @@ public class GameBoard extends JFrame implements ActionListener{
 					currentCoordinates = getCoordinates();
 					count = 2;
 				}
+				
+				// selects location to move to
 				else if(count == 2) {					
 					for (int row = 0; row < 8; row++) {
 						for (int col = 0; col < 8; col++) {
