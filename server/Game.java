@@ -29,7 +29,7 @@ public class Game
 		// Set player 1 to be current player (randomize this later)
 		currentPlayer = this.player1;
 		
-		// Create the game!
+		// Create the game and build the chess board
 		//int tileIndex = 0;
 		for (int x=0; x<8; x++) {
 			for (int y=0; y<8; y++) {
@@ -86,6 +86,7 @@ public class Game
 		}
 	}
 	
+	//switch player's turn
 	private void toggleCurrentPlayer() {
 		if(currentPlayer.equals(player1)) {
 			currentPlayer = player2;
