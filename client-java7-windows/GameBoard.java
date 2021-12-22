@@ -238,6 +238,7 @@ public class GameBoard extends JFrame implements ActionListener{
 		}	
 	}
 	
+	//set colors accordingly to make a chess board
 	public void setColor(int row, int col) {
 		if ((row == 0 || row == 2 || row == 4 || row == 6) && (col == 0 || col == 2 || col == 4 || col == 6)) {
 			buttons[row][col].setBackground(new Color(182,148,110));

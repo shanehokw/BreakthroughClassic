@@ -2,10 +2,8 @@ import java.util.Comparator;
 
 import javax.swing.JOptionPane;
 
-/**
- * Represents a set of x, y coordinates.
- *
- */
+// Represents a set of x, y coordinates.
+
 
 public class Coordinate implements Comparable<Coordinate>
 {
@@ -65,11 +63,9 @@ public class Coordinate implements Comparable<Coordinate>
 		}
 		return true;
 	}
-	
-	/**
-	 * Implement Comparator interface, allowing
-	 * coordinates to be sorted.
-	 */
+
+	//Implement Comparator interface, allowing coordinates to be sorted.
+
 	public int compareTo(Coordinate c) {
 		Coordinate c1 = this;
 		Coordinate c2 = c;
@@ -103,17 +99,8 @@ public class Coordinate implements Comparable<Coordinate>
 			return 0;
 		}
 	}
-	
-	@Override
-	public int hashCode()
-	{
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + x;
-		result = prime * result + y;
-		return result;
-	}
 
+	//a public function used to compare 2 objects and return a boolean 
 	@Override
 	public boolean equals(Object obj)
 	{
@@ -131,6 +118,7 @@ public class Coordinate implements Comparable<Coordinate>
 		return true;
 	}
 
+	//a public function to print x and y coordinates
 	public String toString() {
 		return "(" + x + ", " + y + ")";	
 	}
