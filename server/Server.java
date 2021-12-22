@@ -148,7 +148,7 @@ public class Server extends JFrame{
 						heartbeat.resetTimeout(); // Reset the heartbeat timeout
 					}
 					else {
-						Thread.sleep(20); // Save a little CPU time (but not nearly as bad as the half second lag with the original heartbeat)
+						Thread.sleep(20);
 					}
 				}
 			}
@@ -156,14 +156,12 @@ public class Server extends JFrame{
 				// Not able to write; disconnect
 				disconnect();
 			}
-			catch(InterruptedException e) {
-				// Shouldn't happen
-			}
+			catch(InterruptedException e) {}
 		}
 
 		@Override
 		/**
-		 * Used by to notify the thread about the connection heartbeat
+		 * Used to notify the thread about the connection heartbeat
 		 */
 		public void update(Observable arg0, Object arg1)
 		{
