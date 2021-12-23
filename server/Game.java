@@ -1,7 +1,5 @@
 import java.util.concurrent.ConcurrentSkipListMap;
 
-import javax.swing.JOptionPane;
-
 public class Game
 {
 	protected Player player1 = null;

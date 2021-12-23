@@ -1,7 +1,3 @@
-import java.util.Comparator;
-
-import javax.swing.JOptionPane;
-
 // Represents a set of x, y coordinates.
 
 

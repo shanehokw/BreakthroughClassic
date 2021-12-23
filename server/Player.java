@@ -1,5 +1,3 @@
-import java.net.Socket;
-
 public class Player
 {
 	private boolean inGame = false;

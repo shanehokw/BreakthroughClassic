@@ -1,13 +1,10 @@
 import java.awt.*;
 import javax.swing.*;
-import javax.swing.text.*;
 import java.awt.event.*;
-import java.util.*;
 import java.text.*;
 import java.net.*;
 import java.sql.Timestamp;
 import java.io.*;
-import java.applet.*;
 
 public class Chat extends JFrame implements ActionListener{
 	
